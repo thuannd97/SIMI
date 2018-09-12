@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="user/common/template">
+<head>
+<meta charset="UTF-8" />
+<title th:text="#{notification.add.title}"></title>
+</head>
+<div layout:fragment="content" th:remove="tag">
+	<div class="row">
+		<div class="col-12">
+			<div class="card m-b-30">
+				<div class="card-body">
+					<form th:action="@{/admin/notification/add}" method="post" th:object="${notificationDTO}">
+						<div class="form-group row">
+
+							<label for="example-text-input" class="col-sm-2 col-form-label" th:text="#{notification.title}"></label>
+							<div class="col-sm-10">
+								<input class="form-control" type="text" value="Artisanal kale" name="title" th:field="*{title}" />
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="example-text-input" class="col-sm-2 col-form-label" th:text="#{notification.content}"></label>
+							<div class="col-sm-10">
+								<input class="form-control" type="text" name="content" th:fielf="*{content}" />
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="example-text-input" class="col-sm-2 col-form-label" th:text="#{notification.sendTo}"></label>
+							<div class="col-sm-10">
+								<input class="form-control" id="send-to-search" type="text" name="sendTo" th:field="*{sendTo}" />
+							</div>
+						</div>
+						<div class="form-group col-sm-2"></div>
+						<div class="form-group col-sm-10">
+							<div>
+								<button type="submit" class="btn btn-primary waves-effect waves-light" th:text="#{text.add}"></button>
+								<button type="reset" class="btn btn-secondary waves-effect m-l-5" th:text="#{text.cancel}"></button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- end col -->
+	</div>
+	<!-- end row -->
+</div>
+<script>
+	$(document).ready(function() {
+		$('#autocomplete-input').devbridgeAutocomplete({
+			serviceUrl : '/suggsend-to-searchestion',
+			paramName : 'result',
+			minChars : 1,
+			autoSelectFirst : true,
+		});
+	});
+</script>
+</body>
+</html>

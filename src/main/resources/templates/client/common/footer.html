@@ -1,0 +1,45 @@
+<div th:fragment="footer" th:remove="tag">
+	<footer>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-5">
+					<div class="footer-address">
+						<img width="130" th:src="@{/client/images/logo.png}" alt="Giao dịch thẻ cào tại MuaBanThe24h.Com">
+						<p>
+							<strong>Address: </strong>Đại Học FPT, Hà Nội
+						</p>
+						<p>
+							<strong>Hotline: </strong>0989.783.215
+						</p>
+						<p>
+							<strong>Email: </strong>khanhsieunhan1998@gmail.com
+						</p>
+					</div>
+				</div>
+				<div class="col-md-2">
+					<ul>
+						<li><label>Giới thiệu</label></li>
+						<li><a href="" target="_blank">Về MuaBanThe24h.Com</a></li>
+						<li><a href="" target="_blank">Quy định và chính sách</a></li>
+					</ul>
+				</div>
+				<div class="col-md-3">
+					<ul>
+						<li><label>Hướng dẫn</label></li>
+						<li><a href="" target="_blank">Hướng
+								dẫn mua bán</a></li>
+						<li><a href="" target="_blank">Biểu
+								phí dịch vụ</a></li>
+					</ul>
+				</div>
+				<div class="col-md-2">
+					<ul>
+						<li><label>Liên hệ</label></li>
+						<li><a th:href="@{/lien-he}" rel="noffollow">Liên hệ với chúng tôi</a></li>
+						<li><a th:href="@{/cau-hoi-thuong-gap}" rel="noffollow">Câu hỏi thường gặp</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</footer>
+</div>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="admin/common/template">
+<head>
+<meta charset="UTF-8" />
+<title th:text="#{sim.sell.title}"></title>
+</head>
+<body>
+	<div layout:fragment="content" th:remove="tag">
+		<script>
+			$(function() {
+				$("#fromDate").datepicker();
+				$("#toDate").datepicker();
+			});
+		</script>
+		<div class="row">
+			<div class="col-12">
+				<div class="card m-b-30">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-md-6 col-sm-6">
+								<h4 class="mt-0 header-title" th:text="#{sim.sell.title}"></h4>
+							</div>
+							<div class="col-md-6 col-sm-6">
+								<a class="pull-right" th:href="@{/staff/sim/sell/add}"><img th:src="@{/admin/images/add.png}" height="30" /></a>
+							</div>
+						</div>
+						<hr />
+						<div class="row">
+							<div class="col-md-12">
+								<label>Ẩn/Hiện:</label> <input class="toggle-vis" data-column="0" type="checkbox" th:text="#{sim.id}"> - <input
+									class="toggle-vis" data-column="1" type="checkbox" th:text="#{sim.no}" checked="checked"> - <input class="toggle-vis" data-column="2"
+									type="checkbox" th:text="#{sim.sell.price}" checked="checked"> - <input class="toggle-vis" data-column="3" type="checkbox"
+									th:text="#{sim.sell.deposit}" checked="checked"> - <input class="toggle-vis" data-column="4" type="checkbox" th:text="#{sim.sell.remain}" checked="checked">
+								- <input class="toggle-vis" data-column="5" type="checkbox" th:text="#{sim.sell.customer.name}" checked="checked"> - <input class="toggle-vis"
+									data-column="6" type="checkbox" th:text="#{sim.sell.customer.info}" checked="checked"> - <input class="toggle-vis" data-column="7"
+									type="checkbox" th:text="#{sim.sell.seller}"> - <input class="toggle-vis" data-column="8" type="checkbox"
+									th:text="#{sim.sell.date}" checked="checked"> - <input class="toggle-vis" data-column="9" type="checkbox" th:text="#{sim.sell.created.by}">
+								- <input class="toggle-vis" data-column="10" type="checkbox" th:text="#{sim.sell.created.date}"> - <input class="toggle-vis"
+									data-column="11" type="checkbox" th:text="#{text.option}" checked="checked">
+							</div>
+						</div>
+						<hr />
+						<div class="row">
+							<div class="col-md-3 col-sm-3">
+								<div class="form-group">
+									<label class="control-label" th:text="#{from.date}"></label>: <input name="fromDate" id="fromDate" th:placeholder="#{from.date}"
+										class="form-control form-control-sm" />
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-3">
+								<div class="form-group">
+									<label class="control-label" th:text="#{to.date}"></label>: <input name="toDate" id="toDate" th:placeholder="#{to.date}"
+										class="form-control form-control-sm" />
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-3">
+								<div class="form-group">
+									<label th:text="#{sim.sell.seller}"></label>: <input name="sellerName" id="sellerName" th:placeholder="#{sim.sell.seller}"
+										class="form-control form-control-sm">
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-3">
+								<div class="form-group">
+									<label th:text="#{sim.sell.created.by}"></label>: <input name="createdName" id="createdName"
+										th:placeholder="#{sim.sell.created.by}" class="form-control form-control-sm">
+								</div>
+							</div>
+						</div>
+						<table id="datatable" class="table table-bordered">
+							<thead>
+								<tr>
+									<th th:text="#{sim.id}"></th>
+									<th th:text="#{sim.no}"></th>
+									<th th:text="#{sim.sell.price}"></th>
+									<th th:text="#{sim.sell.deposit}"></th>
+									<th th:text="#{sim.sell.remain}"></th>
+									<th th:text="#{sim.sell.customer.name}"></th>
+									<th th:text="#{sim.sell.customer.info}"></th>
+									<th th:text="#{sim.sell.seller}"></th>
+									<th th:text="#{sim.sell.date}"></th>
+									<th th:text="#{sim.sell.created.by}"></th>
+									<th th:text="#{sim.sell.created.date}"></th>
+									<th th:text="#{text.option}"></th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th th:text="#{sim.id}"></th>
+									<th th:text="#{sim.no}"></th>
+									<th th:text="#{sim.sell.price}"></th>
+									<th th:text="#{sim.sell.deposit}"></th>
+									<th th:text="#{sim.sell.remain}"></th>
+									<th th:text="#{sim.sell.customer.name}"></th>
+									<th th:text="#{sim.sell.customer.info}"></th>
+									<th th:text="#{sim.sell.seller}"></th>
+									<th th:text="#{sim.sell.date}"></th>
+									<th th:text="#{sim.sell.created.by}"></th>
+									<th th:text="#{sim.sell.created.date}"></th>
+									<th th:text="#{text.option}"></th>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" th:text="#{sim.sell.delete.confirm.message}"></div>
+					<div class="modal-body"></div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{text.no}"></button>
+						<a class="btn btn-danger btn-ok" style="color: white;" th:text="#{text.delete}"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" th:inline="javascript">
+		var vietnameseUrl = [[@{/admin/plugins/datatables/Vietnamese.json}]];
+	    var url = [[@{/staff/sim/sell/list}]];
+	    var editUrl = [[@{/admin/sim/sell/edit}]];
+	    var delUrl = [[@{/admin/sim/sell/delete}]];
+	    
+	    var csrf_token = [[${_csrf.token}]];
+	    var searchHolderText = [[#{sim.search.holder}]] 
+	    
+	    var id = "";
+	    var table;
+		$(document).ready(function() {
+			table = $('#datatable').DataTable( {
+				"processing": true,
+		        "serverSide": true,
+		        "ajax": {
+		        	type:"POST",
+		            url: url,
+		            dataType: "json",
+		            contentType: "application/json",
+		            headers: {'X-CSRF-TOKEN': csrf_token},
+		            data: function ( d ) {
+		            	if (typeof $('#sellerName') != 'undefined') {
+		            		d.sellerName = $('#sellerName').val();
+		            	}
+		            	if (typeof $('#createdName') != 'undefined') {
+		            		d.createdName = $('#createdName').val();
+		            	}
+		            	if (typeof $('#toDate') != 'undefined') {
+		            		d.toDate = $('#toDate').val();
+		            	}
+		            	if (typeof $('#fromDate') != 'undefined') {
+		            		d.fromDate = $('#fromDate').val();
+		            	}
+		            	return JSON.stringify( d );
+		            }
+		        },
+		        "columns": [
+					{ "data": "id" },
+		            { "data": "simNo" },
+		            { "data": "sellPrice" },
+		            { "data": "deposit" },
+		            { "data": "" },//will render later
+		            { "data": "customerName" },
+		            { "data": "customerInfo" },
+		            { "data": "sellerName" },
+		            { "data": "sellDate" },
+		            { "data": "createdBy" },
+		            { "data": "createdDate" },
+		            { "data": "id" }
+		        ],
+		        "columnDefs": [
+				{
+			       "visible":false,
+			       "targets": 0,
+			    },
+   		     	{
+   	                "render": function ( data, type, row ) {
+   	                    return '<strong class="text-danger">'+ data + '</strong>';
+   	                },
+   	                "targets": 1,
+   	            },
+   	            {
+   	                "render": function ( data, type, row ) {
+   	                    return '<strong class="text-primary">'+ formatNumber(data) + '</strong>';
+   	                },
+   	                "targets": 2
+   	            },		                       
+		        {
+	                "render": function ( data, type, row ) {
+	                    return '<strong class="text-success">'+formatNumber(data)+'</strong>';
+	                },
+	                "targets": 3
+	            },
+	            {
+	                "render": function ( data, type, row ) {
+	                    return '<strong class="text-warning">'+formatNumber(row.deposit - row.sellPrice)+'</strong>';
+	                },
+	                "targets": 4
+	            },
+	            {
+	                "visible": false,
+	                "targets": 7
+	            },
+	            {
+	                "visible": false,
+	                "targets": 9
+	            },
+	            {
+	                "visible": false,
+	                "targets": 10
+	            },
+	            {
+	                "render": function ( data, type, row ) {
+	                    var content = '<button id="editButt" class="btn btn-primary ti-pencil-alt"></button>'
+	                    +'<button class="btn btn-danger ti-trash" data-toggle="modal" data-target="#confirm-delete" data-simno=' + row.simNo + '></button>';
+			            return content;
+	                },
+	                "orderable": false,
+	                "targets": 11
+	            }
+		        ],
+		        "language": {
+		            "url": vietnameseUrl,
+		            searchPlaceholder: searchHolderText
+		        },
+		        "initComplete": function(settings, json) {
+					$('#sellerName').keyup(function (e) {
+				        table.draw();
+				    });
+					$('#createdName').keyup(function (e) {
+				        table.draw();
+				    });
+					$('#fromDate').change(function (e) {
+				        table.draw();
+				    });
+					$('#toDate').change(function (e) {
+				        table.draw();
+				    });
+		          }
+	        });
+			//show hide colunns
+			$('input.toggle-vis').on( 'change', function (e) {
+		        e.preventDefault();
+		 
+		        // Get the column API object
+		        var column = table.column( $(this).attr('data-column') );
+		 
+		        // Toggle the visibility
+		        column.visible( ! column.visible() );
+		    } );
+			
+			$('#datatable tbody').on( 'click', 'button', function () {
+				var data = table.row( $(this).parents('tr') ).data();
+				id = data.id;
+				if ($(this).prop("id") == 'editButt') {
+					window.location.href = editUrl + "/" + id;
+				}
+		    } );
+			
+			$('#confirm-delete').on('click', '.btn-ok', function(e) {
+				  var $modalDiv = $(e.delegateTarget);
+				  $modalDiv.addClass('loading');
+				  $.get(delUrl + '/' + id).then(function() {
+				     $modalDiv.modal('hide').removeClass('loading');
+				     table.draw();
+				  });
+				});
+			
+			//triggered when modal is about to be shown
+			$('#confirm-delete').on('show.bs.modal', function(e) {
+			    //get data-id attribute of the clicked element
+			    var simNo = $(e.relatedTarget).data('simno');
+			    //populate the textbox
+			    $(e.currentTarget).find('div.modal-body').html('<strong>' + simNo + '</strong>');
+			});
+	    });
+	</script>
+	</div>
+</body>
+</html>

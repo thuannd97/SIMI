@@ -1,0 +1,58 @@
+<div th:fragment="left-menu" th:remove="tag" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<div class="left side-menu">
+		<button type="button" class="button-menu-mobile button-menu-mobile-topbar open-left waves-effect">
+			<i class="ti-close"></i>
+		</button>
+
+		<!-- LOGO -->
+		<div class="topbar-left">
+			<div class="text-center">
+				<a th:href="@{/}" class="logo"><img th:src="@{/admin/images/logo.png}" height="100" alt="simi.com.vn" /></a>
+				<h3 class="text-default">SIMI</h3>
+			</div>
+		</div>
+
+		<div class="sidebar-inner slimscrollleft">
+			<div class="user-details">
+				<div class="text-center">
+					<img th:src="@{/admin/images/avatar.jpg}" class="rounded-circle" />
+				</div>
+				<div class="user-info">
+					<h4 class="font-16 text-primary" sec:authentication="principal.name"></h4>
+					<h4 class="font-16 text-primary" sec:authentication="principal.username"></h4>
+					<!-- <span class="text-primary user-status" sec:authentication="principal.balanceStr"></span> -->
+				</div>
+			</div>
+
+			<div id="sidebar-menu">
+				<ul>
+					<li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/admin/sims}" class="waves-effect"> <i class="ti-menu-alt"></i> <span th:text=#{sim}></span>
+					</a></li>
+					<li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/admin/cards}" class="waves-effect"> <i class="ti-menu-alt"></i> <span th:text=#{card}></span>
+					</a></li>
+					<!-- <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/admin/notifications}" class="waves-effect"> <i class="ti-bell"></i> <span th:text=#{notification}> </span> -->
+					</a></li>
+					<li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/admin/accounts}" class="waves-effect"> <i class="ti-user"></i> <span th:text=#{user}> </span>
+					</a></li>
+					<!-- <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/admin/games}" class="waves-effect"> <i class="ti-game"></i> <span th:text=#{game}> </span> -->
+					</a></li>
+					<li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/staff/simads}" class="waves-effect"> <i class="ti-game"></i> <span th:text=#{ad}> </span>
+					</a></li>
+					<li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/staff/sim/buy/list}" class="waves-effect"> <i class="ti-download"></i> <span th:text=#{sim.buy.title}> </span>
+					</a></li>
+					<li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/staff/sim/sell/list}" class="waves-effect"> <i class="ti-upload"></i> <span th:text=#{sim.sell.title}> </span>
+					</a></li>
+					<!-- <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/staff/sim/buy/statis}" class="waves-effect"> <i class="ti-upload"></i> <span th:text=#{sim.statis.buy}> </span>
+					</a></li>
+					<li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/staff/sim/sell/statis}" class="waves-effect"> <i class="ti-upload"></i> <span th:text=#{sim.statis.sell}> </span>
+					</a></li> -->
+					<li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/staff/sim/statis}" class="waves-effect"> <i class="ti-upload"></i> <span th:text=#{sim.statis}> </span>
+					</a></li>
+					<li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/staff/comments}" class="waves-effect"> <i class="ti-upload"></i> <span th:text=#{comment}> </span>
+					</a></li>
+				</ul>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+	</div>
+</div>

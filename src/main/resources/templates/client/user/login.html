@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="client/common/template">
+<head>
+<meta charset="UTF-8" />
+<title th:text="#{text.login}"></title>
+</head>
+<body>
+	<div layout:fragment="content" th:remove="tag">
+		<div class="box bg-sign-in padding">
+			<div class="sign-in">
+				<div class="si-title">
+					<h3>Đăng nhập</h3>
+				</div>
+				<div class="si-content">
+					<form th:action="@{/dang-nhap}" id="loginForm" name="form" method="post">
+						<div class="alert alert-danger alert-dismissible fade in" th:if="${msg}">
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">×</span>
+							</button>
+							<p th:text="${msg}"></p>
+						</div>
+						<div class="form-group">
+							<label class="control-label"><b>Số điện thoại</b></label> <input placeholder="Số điện thoại đăng nhập" class="form-control"
+								required="required" name="username" type="text">
+						</div>
+						<div class="form-group">
+							<label class="control-label"><b>Mật khẩu</b></label> <input required="required" class="form-control"
+								placeholder="Mật khẩu ít nhất 6 ký tự" name="password" type="password">
+						</div>
+						<div class="checkbox">
+							<label> <input type="checkbox" name="remember-me"> Ghi nhớ
+							</label> <a th:href="@{/quen-mat-khau}" class="pull-right">Quên mật khẩu ?</a>
+						</div>
+						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+						<div class="form-group">
+							<button type="submit" class="btn btn-danger">ĐĂNG NHẬP</button>
+						</div>
+						<div class="form-group">
+							<p>
+								Bạn chưa có tài khoản MuaBanThe24h.Com? <a th:href="@{/dang-ky}">Đăng ký ngay</a>
+							</p>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

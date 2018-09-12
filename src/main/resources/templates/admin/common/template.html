@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport" />
+<title layout:title-pattern="$CONTENT_TITLE | $LAYOUT_TITLE"
+	th:text="#{app}"></title>
+<meta th:content="#{page.slogan}" name="description" />
+<meta content="linkin.vn" name="author" />
+<link rel="shortcut icon" th:href="@{/admin/images/logo.png}"
+	type="image/png" />
+<link th:href="@{/admin/css/bootstrap.min.css}" rel="stylesheet"
+	type="text/css" />
+<link th:href="@{/admin/css/icons.css}" rel="stylesheet" type="text/css" />
+<link th:href="@{/admin/css/style.css}" rel="stylesheet" type="text/css" />
+<link
+	th:href="@{/admin/plugins/datatables/dataTables.bootstrap4.min.css}"
+	rel="stylesheet" type="text/css" />
+<link th:href="@{/admin/plugins/datatables/buttons.bootstrap4.min.css}"
+	rel="stylesheet" type="text/css" />
+<link th:href="@{/admin/css/jquery-ui.min.css}" rel="stylesheet"
+	type="text/css">
+<!-- jQuery  -->
+<script th:src="@{/admin/js/jquery.min.js}"></script>
+<script th:src="@{/admin/js/popper.min.js}"></script>
+<script th:src="@{/admin/js/bootstrap.min.js}"></script>
+<script th:src="@{/admin/js/modernizr.min.js}"></script>
+<script th:src="@{/admin/js/detect.js}"></script>
+<script th:src="@{/admin/js/fastclick.js}"></script>
+<script th:src="@{/admin/js/jquery.slimscroll.js}"></script>
+<script th:src="@{/admin/js/jquery.blockUI.js}"></script>
+<script th:src="@{/admin/js/waves.js}"></script>
+<script th:src="@{/admin/js/jquery.nicescroll.js}"></script>
+<script th:src="@{/admin/js/jquery.scrollTo.min.js}"></script>
+<script th:src="@{/admin/js/jquery-ui.min.js}"></script>
+<!-- Required datatable js -->
+<script th:src="@{/admin/plugins/datatables/jquery.dataTables.min.js}"></script>
+<script
+	th:src="@{/admin/plugins/datatables/dataTables.bootstrap4.min.js}"></script>
+<!-- chartjs -->
+<script th:src="@{/admin/plugins/datatables/chart.js}"></script>
+<script>
+	$(function() {
+		$.datepicker.setDefaults({
+			monthNames : [ "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4",
+					"Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9",
+					"Tháng 10", "Tháng 11", "Tháng 12" ],
+			dayNamesMin : [ 'CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7' ],
+			dateFormat : "dd/mm/yy"
+		});
+		$('input.number').keyup(function(event) {
+
+			// skip for arrow keys
+			if (event.which >= 37 && event.which <= 40)
+				return;
+
+			// format number
+			$(this).val(function(index, value) {
+				return formatNumber(value);
+			});
+		});
+		$('input.number').each(function(index, value) {
+			$(this).val(function(index, value) {
+				return formatNumber(value);
+			});
+		});
+	});
+	function formatNumber(value) {
+		return String(value).replace(/\D/g, "").replace(
+				/\B(?=(\d{3})+(?!\d))/g, ".");
+	}
+	function getOnlyDigit(value) {
+		return String(value).replace(/[^0-9]/g, "");
+	}
+	function parseNumber() {
+		$('input.number').each(function(index, value) {
+			$(this).val(function(index, value) {
+				return getOnlyDigit(value);
+			});
+		});
+		return true;
+	}
+</script>
+</head>
+<body class="fixed-left">
+	<!-- Loader -->
+	<div id="preloader">
+		<div id="status">
+			<div class="spinner"></div>
+		</div>
+	</div>
+
+	<!-- Begin page -->
+	<div id="wrapper">
+		<div th:replace="admin/common/leftmenu::left-menu"></div>
+		<!-- Start right Content here -->
+		<div class="content-page">
+			<!-- Start content -->
+			<div class="content">
+				<div th:replace="admin/common/header::header"></div>
+				<div class="page-content-wrapper">
+					<div class="container-fluid">
+						<div layout:fragment="content">empty</div>
+					</div>
+				</div>
+			</div>
+			<div th:replace="admin/common/footer::footer"></div>
+		</div>
+	</div>
+	<!-- App js -->
+	<script th:src="@{/admin/js/app.js}"></script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="admin/common/template">
+<head>
+<meta charset="UTF-8" />
+<title th:text="#{sim.buy.title}"></title>
+</head>
+<body>
+	<div layout:fragment="content" th:remove="tag">
+		<script>
+			$(function() {
+				$("#fromDate").datepicker();
+				$("#toDate").datepicker();
+			});
+		</script>
+		<div class="row">
+			<div class="col-12">
+				<div class="card m-b-30">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-md-6 col-sm-6">
+								<h4 class="mt-0 header-title" th:text="#{sim.buy.title}"></h4>
+							</div>
+							<div class="col-md-6 col-sm-6">
+								<a class="pull-right" th:href="@{/staff/sim/buy/add}"><img
+									th:src="@{/admin/images/add.png}" height="30" /></a>
+							</div>
+						</div>
+						<hr />
+						<div class="row">
+							<div class="col-md-3 col-sm-3">
+								<div class="form-group">
+									<label class="control-label" th:text="#{from.date}"></label>: <input
+										name="fromDate" id="fromDate" th:placeholder="#{from.date}"
+										class="form-control form-control-sm" />
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-3">
+								<div class="form-group">
+									<label class="control-label" th:text="#{to.date}"></label>: <input
+										name="toDate" id="toDate" th:placeholder="#{to.date}"
+										class="form-control form-control-sm" />
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-3">
+								<div class="form-group">
+									<label th:text="#{sim.buy.buyer.name}"></label>: <input
+										name="buyerName" id="buyerName"
+										th:placeholder="#{sim.buy.buyer.name}"
+										class="form-control form-control-sm">
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-3">
+								<div class="form-group">
+									<label th:text="#{sim.buy.created.name}"></label>: <input
+										name="createdByName" id="createdByName"
+										th:placeholder="#{sim.buy.created.name}"
+										class="form-control form-control-sm">
+								</div>
+							</div>
+						</div>
+						<table id="datatable" class="table table-bordered">
+							<thead>
+								<tr>
+									<th th:text="#{sim.no}"></th>
+									<th th:text="#{sim.buy.price}"></th>
+									<th th:text="#{sim.buy.date}"></th>
+									<th th:text="#{sim.buy.buyer.name}"></th>
+									<th th:text="#{sim.buy.created.date}"></th>
+									<th th:text="#{sim.buy.created.name}"></th>
+									<th th:text="#{text.option}"></th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th th:text="#{sim.no}"></th>
+									<th th:text="#{sim.buy.price}"></th>
+									<th th:text="#{sim.buy.date}"></th>
+									<th th:text="#{sim.buy.buyer.name}"></th>
+									<th th:text="#{sim.buy.created.date}"></th>
+									<th th:text="#{sim.buy.created.name}"></th>
+									<th th:text="#{text.option}"></th>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="confirm-delete" tabindex="-1"
+			role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header"
+						th:text="#{sim.buy.delete.confirm.message}"></div>
+					<div class="modal-body"></div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal"
+							th:text="#{text.no}"></button>
+						<a class="btn btn-danger btn-ok" style="color: white;"
+							th:text="#{text.delete}"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" th:inline="javascript">
+		var vietnameseUrl = [[@{/admin/plugins/datatables/Vietnamese.json}]];
+	    var url = [[@{/staff/sim/buy/list}]];
+	   	var delUrl = [[@{/admin/sim/buy/delete}]]
+	   	var editUrl = [[@{/admin/sim/buy/edit}]]
+	   	
+	    var status1 = [[#{sim.status}]];
+	    var simNo = [[#{sim.simNo}]];
+	    var price = [[#{sim.price}]];
+		var buyerName = [[#{sim.buy.buyer.name}]];
+		var createdName = [[#{sim.created.name}]];
+		var fromDate = [[#{from.date}]];
+		var toDate = [[#{to.date}]];
+		    
+	    var csrf_token = [[${_csrf.token}]];
+	    var searchHolderText = [[#{sim.search.holder}]] 
+	    
+	    var id = "";
+	    var table;
+	    $(document).ready(function() {
+			table = $('#datatable').DataTable( {
+				"processing": true,
+		        "serverSide": true,
+		        "ajax": {
+		        	type:"POST",
+		            url: url,
+		            dataType: "json",
+		            contentType: "application/json",
+		            headers: {'X-CSRF-TOKEN': csrf_token},
+		            data: function ( d ) {
+		            	if (typeof $('#buyerName') != 'undefined') {
+		            		d.buyerName = $('#buyerName').val();
+		            	}
+		            	if (typeof $('#createdByName') != 'undefined') {
+		            		d.createdByName = $('#createdByName').val();
+		            	}
+		            	if (typeof $('#toDate') != 'undefined') {
+		            		d.toDate = $('#toDate').val();
+		            	}
+		            	if (typeof $('#fromDate') != 'undefined') {
+		            		d.fromDate = $('#fromDate').val();
+		            	}
+		            	return JSON.stringify( d );
+		            }
+		        },
+		        "columns": [
+		        	 	{ "data": "simNo" },
+			            { "data": "cost" },
+			            { "data": "buyDate" },
+			            { "data": "buyerName" },
+			            { "data": "createdDate" },
+			            { "data": "createdByName" },
+			            { "data": "id" }
+		        ],
+		        "columnDefs": [
+     		     	{
+   	                "render": function ( data, type, row ) {
+   	                    return '<strong class="text-danger">'+ data + '</strong>';
+   	                },
+   	                "targets": 0
+   	            },
+   	            {
+   	                "render": function ( data, type, row ) {
+   	                    return '<strong class="text-primary">'+ formatNumber(data) + '</strong>';
+   	                },
+   	                "targets": 1
+   	            },
+	            {
+	                "render": function ( data, type, row ) {
+	                    var content = '<button id="editButt" class="btn btn-primary ti-pencil-alt"></button>'
+	                    +'<button class="btn btn-danger ti-trash" data-toggle="modal" data-target="#confirm-delete" data-simno=' + row.simNo + '></button>';
+			            return content;
+	                },
+	                "orderable": false,
+	                "targets": 6
+	            }
+		        ],
+		        "language": {
+		            "url": vietnameseUrl,
+		            searchPlaceholder: searchHolderText
+		        },
+		        "initComplete": function(settings, json) {
+					$('#buyerName').keyup(function (e) {
+				        table.draw();
+				    });
+					$('#createdByName').keyup(function (e) {
+				        table.draw();
+				    });
+					$('#fromDate').change(function (e) {
+				        table.draw();
+				    });
+					$('#toDate').change(function (e) {
+				        table.draw();
+				    });
+		          }
+	        });
+			
+			$('#datatable tbody').on( 'click', 'button', function () {
+				var data = table.row( $(this).parents('tr') ).data();
+				id = data.id;
+				if ($(this).prop("id") == 'editButt') {
+					window.location.href = editUrl + "/" + id;
+				}
+		    } );
+			
+			$('#confirm-delete').on('click', '.btn-ok', function(e) {
+				  var $modalDiv = $(e.delegateTarget);
+				  $modalDiv.addClass('loading');
+				  $.get(delUrl + '/' + id).then(function() {
+				     $modalDiv.modal('hide').removeClass('loading');
+				     table.draw();
+				  });
+				});
+			
+			//triggered when modal is about to be shown
+			$('#confirm-delete').on('show.bs.modal', function(e) {
+			    //get data-id attribute of the clicked element
+			    var simNo = $(e.relatedTarget).data('simno');
+			    console.log(simNo);
+			    //populate the textbox
+			    $(e.currentTarget).find('div.modal-body').html('<strong>' + simNo + '</strong>');
+			});
+	    });
+		
+	</script>
+	</div>
+</body>
+</html>

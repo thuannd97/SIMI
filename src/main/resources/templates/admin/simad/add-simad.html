@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="admin/common/template">
+<head>
+<meta charset="UTF-8" />
+<title th:text="#{sim.update.title}"></title>
+</head>
+<div layout:fragment="content" th:remove="tag">
+	<div class="row">
+		<div class="col-12">
+			<div class="card m-b-30">
+				<div class="card-body">
+					<form th:action="@{/staff/simad/add}" method="post"
+						th:object="${simAd}">
+						<div class="form-group row">
+							<label for="example-text-input" class="col-sm-2 col-form-label"
+								th:text="#{sim.no}"></label>
+							<div class="col-sm-10">
+								<input class="form-control" type="text" name="simNo"
+									th:field="*{simNo}" />
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="example-text-input" class="col-sm-2 col-form-label"
+								th:text="#{ad.description}"></label>
+							<div class="col-sm-10">
+								<input class="form-control" type="text" name="simNo"
+									th:field="*{description}" />
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="example-text-input" class="col-sm-2 col-form-label"
+								th:text="#{sim.price}"></label>
+							<div class="col-sm-10">
+								<input class="form-control" type="text" name="simNo"
+									th:field="*{price}" />
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="example-text-input" class="col-sm-2 col-form-label"
+								th:text="#{ad.status}"></label>
+							<div class="col-sm-10">
+								<select class="form-control" th:placeholder="#{ad.status}"
+									th:field="*{status}">
+									<option th:value="0" th:text="#{ad.status.notpost}"></option>
+									<option th:value="1" th:text="#{ad.status.posted}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="example-text-input" class="col-sm-2 col-form-label"
+								th:text="#{ad.status.target}"></label>
+							<div class="col-sm-10">
+								<select class="form-control" th:placeholder="#{ad.status.target}"
+									th:field="*{target}">
+									<option th:value="2" th:text="#{ad.status.buy}"></option>
+									<option th:value="3" th:text="#{ad.status.sell}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group row">
+							<div class="form-group col-sm-2"></div>
+							<div class="form-group col-sm-10">
+								<button type="submit"
+									class="btn btn-primary waves-effect waves-light"
+									th:text="#{text.add}"></button>
+								<button type="reset"
+									class="btn btn-danger waves-effect waves-light"
+									th:text="#{text.reset}"></button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- end col -->
+	</div>
+	<!-- end row -->
+</div>
+<script>
+	$(document).ready(function() {
+		$('#autocomplete-input').devbridgeAutocomplete({
+			serviceUrl : '/suggsend-to-searchestion',
+			paramName : 'result',
+			minChars : 1,
+			autoSelectFirst : true,
+		});
+	});
+</script>
+</body>
+</html>

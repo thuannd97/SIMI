@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="admin/common/template">
+<head>
+<meta charset="UTF-8" />
+<title th:text="#{text.setting}"></title>
+</head>
+<body>
+	<div layout:fragment="content" th:remove="tag">
+		<div class="row">
+			<div class="col-12">
+				<div class="card m-b-30">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-md-6 col-sm-6">
+								<h4 class="mt-0 header-title" th:text="#{text.setting}"></h4>
+							</div>
+						</div>
+						<hr />
+						<form class="form-horizontal" th:action="@{/user/setting}" method="post">
+							<div class="form-group row">
+								<div class="col-sm-12">
+									<label><input value="true" type="checkbox" checked="checked" /> <span style="font-weight: normal;">Khôi phục mật
+											khẩu bằng email.</span></label>
+								</div>
+							</div>
+							<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+							<div class="form-group row">
+								<div class="form-group col-sm-12">
+									<div>
+										<button type="submit" class="btn btn-primary waves-effect waves-light" th:text="#{text.update}"></button>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

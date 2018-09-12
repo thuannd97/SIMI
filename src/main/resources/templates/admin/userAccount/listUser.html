@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="admin/common/template">
+<head>
+<meta charset="UTF-8" />
+<title th:text="#{user.list.title}"></title>
+</head>
+<body>
+	<div layout:fragment="content" th:remove="tag">
+		<div class="row">
+			<div class="col-12">
+				<div class="card m-b-30">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-md-6 col-sm-6">
+								<h4 class="mt-0 header-title" th:text="#{user.list.title}"></h4>
+							</div>
+							<div class="col-md-6 col-sm-6">
+								<a class="pull-right" th:href="@{/admin/account/add}"><img th:src="@{/admin/images/add.png}" height="30" /></a>
+							</div>
+						</div>
+						<hr />
+						<table id="datatable" class="table table-bordered">
+							<thead>
+								<tr>
+									<th th:text="#{user.id}"></th>
+									<th th:text="#{user.name}"></th>
+									<th th:text="#{user.username}"></th>
+									<th th:text="#{user.status}"></th>
+									<th th:text="#{user.created.date}"></th>
+									<th th:text="#{text.option}"></th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th th:text="#{user.id}"></th>
+									<th th:text="#{user.name}"></th>
+									<th th:text="#{user.username}"></th>
+									<th th:text="#{user.status}"></th>
+									<th th:text="#{user.created.date}"></th>
+									<th th:text="#{text.option}"></th>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" th:text="#{user.delete.confirm.message}"></div>
+					<div class="modal-body"></div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{text.no}"></button>
+						<a class="btn btn-danger btn-ok" style="color: white;" th:text="#{text.delete}"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="confirm-lock" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" th:text="#{user.lock.confirm.message}"></div>
+					<div class="modal-body"></div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{text.no}"></button>
+						<a class="btn btn-danger btn-ok" style="color: white;" th:text="#{text.lock}"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="confirm-unlock" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" th:text="#{user.unlock.confirm.message}"></div>
+					<div class="modal-body"></div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{text.no}"></button>
+						<a class="btn btn-danger btn-ok" style="color: white;" th:text="#{text.unlock}"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="confirm-money" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h6 class="modal-title">
+							<span th:text="#{text.topup}" th:remove="tag"></span> : <span id="account"></span>
+						</h6>
+					</div>
+
+					<div class="modal-body">
+						<form class="form-horizontal" onsubmit="submitForm();return false;">
+							<div class="form-group row">
+								<div class="col-sm-12">
+									<input class="form-control" type="text" th:placeholder="#{user.balance}" id="amount" name="amount"
+										onkeypress="onAmountTextChange();" />
+									<div class="help-block text-danger" style="display: none;" id="invalid-amount-text">
+										<span th:text="#{error.msg.invalid.account.balance}"></span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group row">
+								<div class="form-group col-sm-12">
+									<div>
+										<button type="submit" class="btn btn-primary waves-effect waves-light" th:text="#{text.topup}"></button>
+										<button type="button" class="btn btn-danger waves-effect waves-light" data-dismiss="modal" th:text="#{text.cancel}"></button>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" th:inline="javascript">
+		var vietnameseUrl = [[@{/admin/plugins/datatables/Vietnamese.json}]];
+	    var url = [[@{/admin/accounts}]];
+	    var editUrl = [[@{/admin/account/update}]];
+	    var resetPasswordUrl = [[@{/admin/account/reset-password}]];
+	    var delUrl = [[@{/admin/account/delete}]];
+	    var lockUrl = [[@{/admin/account/change-lock}]];
+	    var topupUrl = [[@{/admin/account/topup-money}]];
+	    
+	    var status = [[#{user.status}]];
+	    var disabled = [[#{user.status.disabled}]];
+	    var enabled = [[#{user.status.enabled}]];
+	    var all = [[#{user.status.all}]];
+	    var csrf_token = [[${_csrf.token}]];
+	    var searchHolderText = [[#{user.search.holder}]];
+	    
+	    var id = "";
+	    var table;
+		$(document).ready(function() {
+			table = $('#datatable').DataTable( {
+				"processing": true,
+		        "serverSide": true,
+		        "ajax": {
+		        	type:"POST",
+		            url: url,
+		            dataType: "json",
+		            contentType: "application/json",
+		            headers: {'X-CSRF-TOKEN': csrf_token},
+		            data: function ( d ) {
+		            	d.roleId = 2;
+		            	if (typeof $('#accountStatus') != 'undefined') {
+		            		d.enabled = $('#accountStatus').val();
+		            	}
+		            	return JSON.stringify( d );
+		            }
+		        },
+		        "columns": [
+		            { "data": "id" },
+		            { "data": "name" },
+		            { "data": "phone" },
+		            { "data": "enabled" },
+		            { "data": "createdDate" },
+		            { "data": "id" }
+		        ],
+		        "columnDefs": [
+     		     	{
+   	                "render": function ( data, type, row ) {
+   	                    return '<strong class="text-primary">'+ data + '</strong>';
+   	                },
+   	                "targets": 2
+   	            },		                       
+		        {
+	                "render": function ( data, type, row ) {
+	                    return data ? ('<strong class="text-success">'+enabled+'</strong>') : ('<strong class="text-warning">'+disabled+'</strong>');
+	                },
+	                "targets": 3
+	            },
+	            {
+	                "render": function ( data, type, row ) {
+	                    var content = '<button id="editButt" class="btn btn-primary ti-pencil-alt"></button>'
+	                    +'<button class="btn btn-danger ti-trash" data-toggle="modal" data-target="#confirm-delete" data-name='+row.name+' data-phone='+row.phone+'></button>'
+			            +'<button id="resetPasswordButt" class="btn btn-info ti-key"></button>';
+			            if (row.enabled) {
+			            	content += '<button class="btn btn-warning ti-lock" data-toggle="modal" data-target="#confirm-lock" data-name='+row.name+' data-phone='+row.phone+'></button>';
+			            } else {
+			            	content += '<button class="btn btn-warning ti-unlock" data-toggle="modal" data-target="#confirm-unlock" data-name='+row.name+' data-phone='+row.phone+'></button>';
+			            }
+			            /* content += '<button class="btn btn-success ti-money" data-toggle="modal" data-target="#confirm-money" data-name='+row.name+' data-phone='+row.phone+'></button>'; */
+			            return content;
+	                },
+	                "orderable": false,
+	                "targets": 5
+	            }
+		        ],
+		        "language": {
+		            "url": vietnameseUrl,
+		            searchPlaceholder: searchHolderText
+		        },
+		        "initComplete": function(settings, json) {
+		        	$("#datatable_filter").prepend( '<label>' +status+ ': <select name="accountStatus" id="accountStatus" class="form-control form-control-sm" aria-controls="datatable"><option value="">' +all+ '</option><option value="false">' +disabled+ '</option><option value="true">'+enabled+'</option></select></label>');
+					$('#accountStatus').change(function (e) {
+				        table.draw();
+				    });
+		          }
+	        });
+			
+			$('#datatable tbody').on( 'click', 'button', function () {
+				var data = table.row( $(this).parents('tr') ).data();
+				id = data.id;
+				if ($(this).prop("id") == 'editButt') {
+					window.location.href = editUrl + "/" + id;
+				}
+				if ($(this).prop("id") == 'resetPasswordButt') {
+					window.location.href = resetPasswordUrl + "/" + id;
+				}
+		    } );
+			
+			$('#confirm-delete').on('click', '.btn-ok', function(e) {
+				  var $modalDiv = $(e.delegateTarget);
+				  $modalDiv.addClass('loading');
+				  $.get(delUrl + '/' + id).then(function() {
+				     $modalDiv.modal('hide').removeClass('loading');
+				     table.draw();
+				  });
+				});
+			
+			$('#confirm-lock').on('click', '.btn-ok', function(e) {
+				  var $modalDiv = $(e.delegateTarget);
+				  $modalDiv.addClass('loading');
+				  $.get(lockUrl + '/' + id).then(function() {
+				     $modalDiv.modal('hide').removeClass('loading');
+				     table.draw();
+				  });
+				});
+			
+			$('#confirm-unlock').on('click', '.btn-ok', function(e) {
+				  var $modalDiv = $(e.delegateTarget);
+				  $modalDiv.addClass('loading');
+				  $.get(lockUrl + '/' + id).then(function() {
+				     $modalDiv.modal('hide').removeClass('loading');
+				     table.draw();
+				  });
+				});
+			
+			//triggered when modal is about to be shown
+			$('#confirm-delete').on('show.bs.modal', function(e) {
+			    //get data-id attribute of the clicked element
+			    var name = $(e.relatedTarget).data('name');
+			    var phone = $(e.relatedTarget).data('phone');
+			    //populate the textbox
+			    $(e.currentTarget).find('div.modal-body').html('<strong>' + name + ' - ' + phone + '</strong>');
+			});
+			$('#confirm-lock').on('show.bs.modal', function(e) {
+			    //get data-id attribute of the clicked element
+			    var name = $(e.relatedTarget).data('name');
+			    var phone = $(e.relatedTarget).data('phone');
+			    //populate the textbox
+			    $(e.currentTarget).find('div.modal-body').html('<strong>' + name + ' - ' + phone + '</strong>');
+			});
+			$('#confirm-unlock').on('show.bs.modal', function(e) {
+			    //get data-id attribute of the clicked element
+			    var name = $(e.relatedTarget).data('name');
+			    var phone = $(e.relatedTarget).data('phone');
+			    //populate the textbox
+			    $(e.currentTarget).find('div.modal-body').html('<strong>' + name + ' - ' + phone + '</strong>');
+			});
+			$('#confirm-money').on('show.bs.modal', function(e) {
+			    //get data-id attribute of the clicked element
+			    var name = $(e.relatedTarget).data('name');
+			    var phone = $(e.relatedTarget).data('phone');
+			    //populate the textbox
+			    $(e.currentTarget).find('#account').html('<strong>' + name + ' - ' + phone + '</strong>');
+			});
+			
+			
+	    });
+		function onAmountTextChange() {
+			$("#invalid-amount-text").css("display","none");
+		}
+		function submitForm() {
+			var amount = $("#amount").val();
+			if ($.isNumeric(amount)) {
+				$('#confirm-money').addClass('loading');
+				$.ajax({
+			        url : topupUrl,
+			        type: 'POST',
+			        dataType: "json",
+		            contentType: "application/json",
+		            headers: {'X-CSRF-TOKEN': csrf_token},
+			        data: JSON.stringify({"balance": amount,"id": id}),
+			        success: function(){
+			        	$('#confirm-money form')[0].reset();
+			        	$('#confirm-money').modal('hide').removeClass('loading');
+				    	table.draw();
+				    },
+			        error: function(){
+			        	$("#invalid-amount-text").css("display","block");
+			        }
+			    });
+			} else {
+				$("#invalid-amount-text").css("display","block");
+			}
+			return false;
+		}
+	</script>
+	</div>
+</body>
+</html>

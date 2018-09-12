@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="admin/common/template">
+<head>
+<meta charset="UTF-8" />
+<title th:text="#{sim.statis.sell}"></title>
+</head>
+<body>
+	<div layout:fragment="content" th:remove="tag">
+		<script>
+			$(function() {
+				$("#fromDate").datepicker();
+				$("#toDate").datepicker();
+			});
+		</script>
+		<div class="row">
+			<div class="col-12">
+				<div class="card m-b-30">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-md-6 col-sm-6">
+								<h4 class="mt-0 header-title" th:text="#{sim.statis.sell}"></h4>
+							</div>
+						</div>
+						<hr />
+						<div class="row">
+							<div class="col-md-3 col-sm-3">
+								<div class="form-group">
+									<label class="control-label" th:text="#{from.date}"></label>: <input
+										name="fromDate" id="fromDate" th:placeholder="#{from.date}"
+										class="form-control form-control-sm" />
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-3">
+								<div class="form-group">
+									<label class="control-label" th:text="#{to.date}"></label>: <input
+										name="toDate" id="toDate" th:placeholder="#{to.date}"
+										class="form-control form-control-sm" />
+								</div>
+							</div>
+						</div>
+						<table id="datatable" class="table table-bordered">
+							<thead>
+								<tr>
+									<th th:text="#{sim.statis.quantity}"></th>
+									<th th:text="#{sim.statis.money}"></th>
+									<th th:text="#{sim.statis.deposit}"></th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th th:text="#{sim.statis.quantity}"></th>
+									<th th:text="#{sim.statis.money}"></th>
+									<th th:text="#{sim.statis.deposit}"></th>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" th:inline="javascript">
+		var vietnameseUrl = [[@{/admin/plugins/datatables/Vietnamese.json}]];
+	    var url = [[@{/staff/sim/sell/statis}]];
+	   	
+		var fromDate = [[#{from.date}]];
+		var toDate = [[#{to.date}]];
+		    
+	    var csrf_token = [[${_csrf.token}]];
+	    var searchHolderText = [[#{sim.search.holder}]] 
+	    
+	    var id = "";
+	    var table;
+	    $(document).ready(function() {
+			table = $('#datatable').DataTable( {
+				"processing": true,
+		        "serverSide": true,
+		        "ajax": {
+		        	type:"POST",
+		            url: url,
+		            dataType: "json",
+		            contentType: "application/json",
+		            headers: {'X-CSRF-TOKEN': csrf_token},
+		            data: function ( d ) {
+		            	if (typeof $('#toDate') != 'undefined') {
+		            		d.toDate = $('#toDate').val();
+		            	}
+		            	if (typeof $('#fromDate') != 'undefined') {
+		            		d.fromDate = $('#fromDate').val();
+		            	}
+		            	return JSON.stringify( d );
+		            }
+		        },
+		        "columns": [
+		        	 	{ "data": "quantity"},
+			            { "data": "totalMoney"},
+		        	 	{ "data": "deposite"}
+		        ],
+		        "columnDefs": [
+     		     	{
+   	                "render": function ( data, type, row ) {
+   	                    return '<strong class="text-danger">'+ data + '</strong>';
+   	                },
+   	                "targets": 0
+   	            },
+   	            {
+   	                "render": function ( data, type, row ) {
+   	                    return '<strong class="text-primary">'+ formatNumber(data) + '</strong>';
+   	                },
+   	                "targets": 1
+   	            },
+   	        	{
+   	                "render": function ( data, type, row ) {
+   	                    return '<strong class="text-primary">'+ formatNumber(data) + '</strong>';
+   	                },
+   	                "targets": 2
+   	            }
+		        ],
+		        "language": {
+		            "url": vietnameseUrl,
+		            searchPlaceholder: searchHolderText
+		        },
+		        "initComplete": function(settings, json) {
+					$('#fromDate').change(function (e) {
+				        table.draw();
+				    });
+					$('#toDate').change(function (e) {
+				        table.draw();
+				    });
+		          }
+	        });
+			
+	    });
+	</script>
+	</div>
+</body>
+</html>

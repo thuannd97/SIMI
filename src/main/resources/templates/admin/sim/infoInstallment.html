@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="admin/common/template">
+<head>
+<meta charset="UTF-8" />
+<title th:text="#{sim.installment.title}"></title>
+</head>
+<body>
+	<div layout:fragment="content" th:remove="tag">
+		<div class="row">
+			<div class="col-12">
+				<div class="card m-b-30">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-md-6 col-sm-6">
+								<h4 class="mt-0 header-title" th:text="#{sim.installment.title}"></h4>
+							</div>
+							<div class="col-md-6 col-sm-6">
+								<a class="pull-right" th:href="@{/admin/addInfoInstallment}"><img
+									th:src="@{/admin/images/add.png}" height="30" /></a>
+							</div>
+						</div>
+						<hr />
+						<table id="datatable" class="table table-bordered">
+							<thead>
+								<tr>
+									<th th:text="#{sim.id}"></th>
+									<th th:text="#{sim.installment.debtors.installment}"></th>
+									<th th:text="#{sim.installment.debtors.times}"></th>
+									<th th:text="#{sim.installment.debtors.moneyreceiver}"></th>
+									<th th:text="#{sim.installment.debtors.money}"></th>
+									<th th:text="#{sim.installment.debtors.daypay}"></th>
+									
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th th:text="#{sim.id}"></th>
+									<th th:text="#{sim.installment.debtors.installment}"></th>
+									<th th:text="#{sim.installment.debtors.times}"></th>
+									<th th:text="#{sim.installment.debtors.moneyreceiver}"></th>
+									<th th:text="#{sim.installment.debtors.money}"></th>
+									<th th:text="#{sim.installment.debtors.daypay}"></th>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="confirm-delete" tabindex="-1"
+			role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" th:text="#{sim.delete.confirm.message}"></div>
+					<div class="modal-body"></div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal"
+							th:text="#{text.no}"></button>
+						<a class="btn btn-danger btn-ok" style="color: white;"
+							th:text="#{text.delete}"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="confirm-price" tabindex="-1" role="dialog"
+			aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h6 class="modal-title">
+							<span th:text="#{sim.change.price}" th:remove="tag"></span> : <span
+								id="simNo"></span>
+						</h6>
+					</div>
+
+					<div class="modal-body">
+						<form class="form-horizontal"
+							onsubmit="submitForm();return false;">
+							<div class="form-group row">
+								<div class="col-sm-12">
+									<input class="form-control" type="text"
+										th:placeholder="#{sim.price}" id="price" name="price"
+										onkeypress="onPriceTextChange();" />
+									<div class="help-block text-danger" style="display: none;"
+										id="invalid-price-text">
+										<span th:text="#{error.msg.invalid.account.balance}"></span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group row">
+								<div class="form-group col-sm-12">
+									<div>
+										<button type="submit"
+											class="btn btn-primary waves-effect waves-light"
+											th:text="#{text.update}"></button>
+										<button type="button"
+											class="btn btn-danger waves-effect waves-light"
+											data-dismiss="modal" th:text="#{text.cancel}"></button>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" th:inline="javascript">
+		var vietnameseUrl = [[@{/admin/plugins/datatables/Vietnamese.json}]];
+	    var url = [[@{/admin/inforInstallment}]];
+	    var editUrl = [[@{/admin/payInstallment}]];
+	    var delUrl = [[@{/admin/installment/delete}]];
+	    var topupUrl = [[@{/admin/sim/edit-price}]];
+	    
+	    var status1 = [[#{sim.status}]];
+	    var sold = [[#{sim.status.sold}]];
+	    var available = [[#{sim.status.available}]];
+	    var all = [[#{sim.status.all}]];
+	    var csrf_token = [[${_csrf.token}]];
+	    
+	    var id = "";
+	    var table;
+		$(document).ready(function() {
+			table = $('#datatable').DataTable( {
+				"processing": true,
+		        "serverSide": true,
+		        "ajax": {
+		        	type:"POST",
+		            url: url,
+		            dataType: "json",
+		            contentType: "application/json",
+		            headers: {'X-CSRF-TOKEN': csrf_token},
+		            data: function ( d ) {
+		            	if (typeof $('#simStatus') != 'undefined') {
+		            		d.status = $('#simStatus').val();
+		            	}
+		            	return JSON.stringify( d );
+		            }
+		        },
+		        "columns": [
+		        	{ "data": "id" },
+		        	{ "data": "idInstallment" },
+		            { "data": "times" },
+		            { "data": "moneyReceiver" },
+		            { "data": "money" },
+		            { "data": "dayPay" },	  
+		        ],
+		        "columnDefs": [
+		        	{
+					       "render": function ( data, type, row ) {
+					           return '<strong class="text-danger">'+ data + '</strong>';
+					       },
+					       "targets": 1
+					   },
+					   {
+					       "render": function ( data, type, row ) {
+					           return '<strong class="text-danger">'+ data + '</strong>';
+					       },
+					       "targets": 3
+					   },
+     		     	{
+   	                "render": function ( data, type, row ) {
+   	                    return '<strong class="text-primary">'+ data + '</strong>';
+   	                },
+   	                "targets": 2
+   	             },		                       
+   	             {
+    	                "render": function ( data, type, row ) {
+    	                    return '<strong class="text-primary">'+ formatNumber(data) + '</strong>';
+    	                },
+    	                "targets": 4
+   	            }, 
+//    	     	{
+//    	                "render": function ( data, type, row ) {
+//    	                    return '<strong class="text-primary">'+ formatNumber(data) + '</strong>';
+//    	                },
+//    	                "targets": 5
+//    	            },		
+// 	            {
+// 	                "render": function ( data, type, row ) {
+// 	                    var content = 
+// 	                    '<button id="editButt" class="btn btn-primary ti-pencil-alt"></button>' +
+// 	                    '<button class="btn btn-danger ti-trash" data-toggle="modal" data-target="#confirm-delete" data-simno=' + row.simNo + '></button>'
+// // 			            content += '<button class="btn btn-success ti-money" data-toggle="modal" data-target="#confirm-price" data-simno=' + row.simNo + '></button>';
+// 			            return content;
+// 	                },
+// 	                "orderable": false,
+// 	                "targets": 9
+// 	            }
+		        ],
+		        "language": {
+		            "url": vietnameseUrl,
+		            searchPlaceholder: "Tìm sim"
+		        },
+		        "initComplete": function(settings, json) {
+		        	$("#datatable_filter").prepend( '<label>' +status1+ ': <select name="simStatus" id="simStatus" class="form-control form-control-sm" aria-controls="datatable"><option value="">' +all+ '</option><option value="0">' +sold+ '</option><option value="1">'+available+'</option></select></label>');
+					$('#simStatus').change(function (e) {
+				        table.draw();
+				    });
+		          }
+	        });
+			
+			$('#datatable tbody').on( 'click', 'button', function () {
+				var data = table.row( $(this).parents('tr') ).data();
+				id = data.id;
+				if ($(this).prop("id") == 'editButt') {
+					window.location.href = editUrl + "/" + id;
+				}
+		    } );
+			
+			$('#confirm-delete').on('click', '.btn-ok', function(e) {
+				  var $modalDiv = $(e.delegateTarget);
+				  $modalDiv.addClass('loading');
+				  $.get(delUrl + '/' + id).then(function() {
+				     $modalDiv.modal('hide').removeClass('loading');
+				     table.draw();
+				  });
+				});
+			
+			//triggered when modal is about to be shown
+			$('#confirm-delete').on('show.bs.modal', function(e) {
+			    //get data-id attribute of the clicked element
+			    var simNo = $(e.relatedTarget).data('simno');
+			    //populate the textbox
+			    $(e.currentTarget).find('div.modal-body').html('<strong>' + simNo + '</strong>');
+			});
+
+			$('#confirm-price').on('show.bs.modal', function(e) {
+			    //get data-id attribute of the clicked element
+			    var id = $(e.relatedTarget).data('id');
+			    //populate the textbox
+			    $(e.currentTarget).find('#id').html('<strong>' + id + '</strong>');
+			});
+	    });
+		function onPriceTextChange() {
+			$("#invalid-price-text").css("display","none");
+		}
+		function submitForm() {
+			var price = $("#price").val();
+			if ($.isNumeric(price)) {
+				$('#confirm-price').addClass('loading');
+				$.ajax({
+			        url : topupUrl,
+			        type: 'POST',
+			        dataType: "json",
+		            contentType: "application/json",
+		            headers: {'X-CSRF-TOKEN': csrf_token},
+			        data: JSON.stringify({"price": price,"id": id}),
+			        success: function(){
+			        	$('#confirm-price form')[0].reset();
+			        	$('#confirm-price').modal('hide').removeClass('loading');
+				    	table.draw();
+				    },
+			        error: function(){
+			        	$("#invalid-price-text").css("display","block");
+			        }
+			    });
+			} else {
+				$("#invalid-price-text").css("display","block");
+			}
+			return false;
+		}
+	</script>
+	</div>
+</body>
+</html>

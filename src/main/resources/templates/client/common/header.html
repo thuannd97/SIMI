@@ -1,0 +1,55 @@
+<div th:fragment="header" th:remove="tag" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<div class="header-top">
+		<div class="container">
+			<ul class="row">
+				<li class="col-md-2">
+					<p>
+						Tỷ giá: 1NDT = <b>3.635đ</b>
+					</p>
+				</li>
+				<li class="col-md-6"></li>
+				<li class="col-md-4">
+					<ul class="register">
+						<li class="form-register" sec:authorize="!isAuthenticated()"><a th:href="@{/dang-ky}" rel="noffollow"><i class="fa fa-user"></i> <span th:text="#{text.register}" th:remove="tag"></span></a> | <a th:href="@{/dang-nhap}" rel="noffollow"><strong th:text="#{text.login}"></strong> </a></li>
+						<li class="form-register" sec:authorize="isAuthenticated()"><a th:href="@{/dang-xuat}" rel="noffollow"><i class="fa fa-user"></i> <span th:text="#{text.logout}" th:remove="tag"></span></a></li>
+						<li sec:authorize="isAuthenticated()"><a th:href="@{/user/home}" rel="noffollow"> <i class="fa fa-dashboard"></i> <span th:text="#{text.management}" th:remove="tag"></span>
+						</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="header-bottom">
+		<div class="container">
+			<div class="hb-logo pull-left">
+				<a th:href="@{/}" th:title="#{menu.home.title}"> <img
+					th:src="@{/client/images/logo.png}" th:alt="#{menu.home.title}" width="130">
+				</a>
+			</div>
+			<h1 class="h1-chipo hidden-xs" th:text="#{page.slogan}"></h1>
+			<div class="hb-navs pull-right">
+				<ul>
+					<li><a href="http://muabanthe24h.com/blog/gioi-thieu/">Giới thiệu</a></li>
+					<li><a href="http://muabanthe24h.com/blog/quy-dinh-va-chinh-sach/" target="_blank">Biểu
+							phí</a></li>
+					<li><a href="http://muabanthe24h.com/blog/" target="_blank">Blog</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="mmenu">
+			<span class="menu-toggle"></span>
+			<div class="bg-1"></div>
+			<div class="bg-2"></div>
+			<nav class="toggle-navbar">
+				<span class="close-btn"></span>
+				<div class="nav">
+					<ul>
+						<li><a th:href="@{/}">Trang chủ </a></li>
+						<li><a href="#/nhap-hang-trung-quoc">Nhập hàng Trung Quốc </a></li>
+						<li><a href="#/cau-hoi-thuong-gap" rel="noffollow">Câu hỏi thường gặp </a></li>
+					</ul>
+				</div>
+			</nav>
+		</div>
+	</div>
+</div>

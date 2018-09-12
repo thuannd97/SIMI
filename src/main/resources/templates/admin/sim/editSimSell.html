@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="admin/common/template">
+<head>
+<meta charset="UTF-8" />
+<title th:text="#{sim.sell.edit.title}"></title>
+</head>
+<body>
+	<div layout:fragment="content" th:remove="tag">
+		<script>
+			$(function() {
+				$("#sellDate").datepicker();
+			});
+		</script>
+		<div class="row">
+			<div class="col-12">
+				<div class="card m-b-30">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-md-6 col-sm-6">
+								<h4 class="mt-0 header-title" th:text="#{sim.sell.edit.title}"></h4>
+							</div>
+							<div class="col-md-6 col-sm-6">
+								<a class="pull-right" onclick="history.back();"><img th:src="@{/admin/images/back.png}" height="30" /></a>
+							</div>
+						</div>
+						<hr />
+						<form class="form-horizontal" th:action="@{/admin/sim/sell/edit}" method="post" th:object="${simsell}" onsubmit="return parseNumber();">
+							<input type="hidden" th:field="*{id}" />
+							<div class="form-group row">
+								<label for="example-text-input" class="col-sm-2 col-form-label" th:text="#{sim.no}"></label>
+								<div class="col-sm-10">
+									<input readonly="readonly"  class="form-control" type="text" th:placeholder="#{sim.no}" th:field="*{simNo}" />
+									<div class="help-block text-danger" th:errors="*{simNo}"></div>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label for="example-text-input" class="col-sm-2 col-form-label" th:text="#{sim.sell.price}"></label>
+								<div class="col-sm-10">
+									<input class="form-control number" type="text" th:placeholder="#{sim.sell.price}" th:field="*{sellPrice}" />
+									<div class="help-block text-danger" th:errors="*{sellPrice}"></div>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label for="example-text-input" class="col-sm-2 col-form-label" th:text="#{sim.sell.date}"></label>
+								<div class="col-sm-10">
+									<input class="form-control" type="text" th:placeholder="#{sim.sell.date}" th:field="*{sellDate}" />
+									<div class="help-block  text-danger" th:errors="*{sellDate}"></div>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label for="example-text-input" class="col-sm-2 col-form-label" th:text="#{sim.sell.seller}"></label>
+								<div class="col-sm-10">
+									<select class="form-control" th:placeholder="#{sim.sell.seller}" th:field="*{sellerId}">
+										<option th:each="seller : ${sellers}" th:value="${seller.id}" th:text="${seller.name}"></option>
+									</select>
+									<div class="help-block text-danger" th:errors="*{sellerId}"></div>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label for="example-text-input" class="col-sm-2 col-form-label" th:text="#{sim.sell.customer.name}"></label>
+								<div class="col-sm-10">
+									<input class="form-control" type="text" th:placeholder="#{sim.sell.customer.name}" th:field="*{customerName}" />
+									<div class="help-block  text-danger" th:errors="*{customerName}"></div>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label for="example-text-input" class="col-sm-2 col-form-label" th:text="#{sim.sell.customer.info}"></label>
+								<div class="col-sm-10">
+									<input class="form-control" type="text" th:placeholder="#{sim.sell.customer.info}" th:field="*{customerInfo}" />
+									<div class="help-block  text-danger" th:errors="*{customerInfo}"></div>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label for="example-text-input" class="col-sm-2 col-form-label" th:text="#{sim.sell.deposit}"></label>
+								<div class="col-sm-10">
+									<input class="form-control number" type="text" th:placeholder="#{sim.sell.deposit}" th:field="*{deposit}" />
+									<div class="help-block  text-danger" th:errors="*{deposit}"></div>
+								</div>
+							</div>
+							<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+							<div class="form-group row">
+								<div class="form-group col-sm-2"></div>
+								<div class="form-group col-sm-10">
+									<button type="submit" class="btn btn-primary waves-effect waves-light" th:text="#{text.update}"></button>
+									<button type="reset" class="btn btn-danger waves-effect waves-light" th:text="#{text.reset}"></button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

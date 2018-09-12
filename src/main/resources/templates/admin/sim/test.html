@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="admin/common/template">
+<head>
+<meta charset="UTF-8" />
+<title th:text="#{sim.statis}"></title>
+</head>
+<body>
+	<div layout:fragment="content" th:remove="tag">
+		<script>
+			$(function() {
+				$("#fromDate").datepicker();
+				$("#toDate").datepicker();
+			});
+		</script>
+		<div class="row">
+			<div class="col-12">
+				<div class="card m-b-30">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-md-6 col-sm-6">
+								<h4 class="mt-0 header-title" th:text="#{sim.statis}"></h4>
+							</div>
+						</div>
+						<hr />
+						<div class="row">
+							<div class="col-md-3 col-sm-3">
+								<div class="form-group">
+									<label class="control-label" th:text="#{from.date}"></label>: <input
+										name="fromDate" id="fromDate" th:placeholder="#{from.date}"
+										class="form-control form-control-sm" />
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-3">
+								<div class="form-group">
+									<label class="control-label" th:text="#{to.date}"></label>: <input
+										name="toDate" id="toDate" th:placeholder="#{to.date}"
+										class="form-control form-control-sm" />
+								</div>
+							</div>
+						</div>
+						<table id="datatable1" class="table table-bordered">
+							<thead>
+								<tr>
+									<th th:text="#{sim.statis.total.buy}"></th>
+									<th th:text="#{sim.statis.total.sell}"></th>
+									<th th:text="#{sim.statis.total.price}"></th>
+									<th th:text="#{sim.statis.total.cost}"></th>
+									<th th:text="#{sim.statis.total.deposit}"></th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th th:text="#{sim.statis.total.buy}"></th>
+									<th th:text="#{sim.statis.total.sell}"></th>
+									<th th:text="#{sim.statis.total.price}"></th>
+									<th th:text="#{sim.statis.total.cost}"></th>
+									<th th:text="#{sim.statis.total.deposit}"></th>
+								</tr>
+							</tfoot>
+						</table>
+						<table id="datatable2" class="table table-bordered">
+							<thead>
+								<tr>
+									<th th:text="#{sim.no}"></th>
+									<th th:text="#{sim.buy.price}"></th>
+									<th th:text="#{sim.buy.date}"></th>
+									<th th:text="#{sim.buy.buyer.name}"></th>
+									<th th:text="#{sim.buy.created.date}"></th>
+									<th th:text="#{sim.buy.created.name}"></th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th th:text="#{sim.no}"></th>
+									<th th:text="#{sim.buy.price}"></th>
+									<th th:text="#{sim.buy.date}"></th>
+									<th th:text="#{sim.buy.buyer.name}"></th>
+									<th th:text="#{sim.buy.created.date}"></th>
+									<th th:text="#{sim.buy.created.name}"></th>
+								</tr>
+							</tfoot>
+						</table>
+						<table id="datatable3" class="table table-bordered">
+							<thead>
+								<tr>
+									<th th:text="#{sim.id}"></th>
+									<th th:text="#{sim.no}"></th>
+									<th th:text="#{sim.sell.price}"></th>
+									<th th:text="#{sim.sell.deposit}"></th>
+									<th th:text="#{sim.sell.remain}"></th>
+									<th th:text="#{sim.sell.customer.name}"></th>
+									<th th:text="#{sim.sell.customer.info}"></th>
+									<th th:text="#{sim.sell.seller}"></th>
+									<th th:text="#{sim.sell.date}"></th>
+									<th th:text="#{sim.sell.created.by}"></th>
+									<th th:text="#{sim.sell.created.date}"></th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th th:text="#{sim.id}"></th>
+									<th th:text="#{sim.no}"></th>
+									<th th:text="#{sim.sell.price}"></th>
+									<th th:text="#{sim.sell.deposit}"></th>
+									<th th:text="#{sim.sell.remain}"></th>
+									<th th:text="#{sim.sell.customer.name}"></th>
+									<th th:text="#{sim.sell.customer.info}"></th>
+									<th th:text="#{sim.sell.seller}"></th>
+									<th th:text="#{sim.sell.date}"></th>
+									<th th:text="#{sim.sell.created.by}"></th>
+									<th th:text="#{sim.sell.created.date}"></th>
+								</tr>
+							</tfoot>
+						</table>
+
+					</div>
+					<!-- chart -->
+					<canvas id="myChart"></canvas>
+				</div>
+
+			</div>
+		</div>
+		<script type="text/javascript" th:inline="javascript">
+		var vietnameseUrl = [[@{/admin/plugins/datatables/Vietnamese.json}]];
+	    var url = [[@{/staff/sim/statis}]];
+	   	var simBuyUrl = [[@{/staff/sim/buy/list}]];
+	   	var simSellUrl = [[@{/staff/sim/sell/list}]];
+	   	
+		var fromDate = [[#{from.date}]];
+		var toDate = [[#{to.date}]];
+	    var buy = [[#{sim.statis.total.buy}]];
+	    var sell = [[#{sim.statis.total.sell}]];
+	    
+		var csrf_token = [[${_csrf.token}]];
+	    var searchHolderText = [[#{sim.search.holder}]] 
+	    
+	    var id = "";
+	    var table1;
+	    var table2;
+	    var table3;
+	    var data1;
+	    var ctx =  document.getElementById('myChart').getContext('2d');
+	    
+	    $(document).ready(function() {
+			table1 = $('#datatable1').DataTable( {
+				"filter":false,
+				"paging": false,
+				"info": false,
+				"processing": true,
+		        "serverSide": true,
+		        "ajax": {
+		        	type:"POST",
+		            url: url,
+		            dataType: "json",
+		            contentType: "application/json",
+		            headers: {'X-CSRF-TOKEN': csrf_token},
+		            data: function ( d ) {
+		            	if (typeof $('#toDate') != 'undefined') {
+		            		d.toDate = $('#toDate').val();
+		            	}
+		            	if (typeof $('#fromDate') != 'undefined') {
+		            		d.fromDate = $('#fromDate').val();
+		            	}
+		            	return JSON.stringify( d );
+		            }
+		        },
+		        "columns": [
+		        	 	{ "data": "quantitySimBuy"},
+		        	 	{ "data": "quantitySimSell"},
+		        	 	{ "data": "priceTotal"},
+		        	 	{ "data": "costTotal"},
+		        	 	{ "data": "deposit"}
+		        ],
+		        "columnDefs": [
+	     		     {
+	   	                "render": function ( data, type, row ) {
+	   	                	data1 = data;
+	   	                    return '<strong class="text-danger">'+ data + '</strong>';
+	   	                },
+	   	                "targets": 0
+	   	            },
+	   	         	{
+	   	                "render": function ( data, type, row ) {
+	   	                	//render chart
+	   	                 	var myChart = new Chart(ctx, {
+		   	             		type: 'doughnut',
+		   	             		data:{
+		   	             			datasets:[
+		   	             				{
+		   	             					data: [data1, data],
+		   	             					backgroundColor: [
+		   	                     		          "#56d798",
+		   	                     		          "#f38b4a"
+		   	                     		    ]
+		   	             				}
+		   	             			],
+		   	             			labels: [buy, sell]
+		   	             		},
+	   	             		});
+	   	                	return '<strong class="text-danger">'+ data + '</strong>';
+	   	                },
+	   	                "targets": 1
+	   	            },
+	   	            {
+	   	                "render": function ( data, type, row ) {
+	   	                    return '<strong class="text-primary">'+ formatNumber(data) + '</strong>';
+	   	                },
+	   	                "targets": 2
+	   	            },
+	   	         	{
+	   	                "render": function ( data, type, row ) {
+	   	                    return '<strong class="text-primary">'+ formatNumber(data) + '</strong>';
+	   	                },
+	   	                "targets": 3
+	   	            },
+	   	         	{
+	   	                "render": function ( data, type, row ) {
+	   	                    return '<strong class="text-primary">'+ formatNumber(data) + '</strong>';
+	   	                },
+	   	                "targets": 4
+	   	            } 
+		        ],
+		        "language": {
+		            "url": vietnameseUrl
+		        },
+		        "initComplete": function(settings, json) {
+					$('#fromDate').change(function (e) {
+				        table1.draw();
+				    });
+					$('#toDate').change(function (e) {
+				        table1.draw();
+				    });
+		          }
+	        });
+	    });
+		
+	    $(document).ready(function() {
+			table2 = $('#datatable2').DataTable( {
+				"processing": true,
+		        "serverSide": true,
+		        "ajax": {
+		        	type:"POST",
+		            url: simBuyUrl,
+		            dataType: "json",
+		            contentType: "application/json",
+		            headers: {'X-CSRF-TOKEN': csrf_token},
+		            data: function ( d ) {
+		            	if (typeof $('#toDate') != 'undefined') {
+		            		d.toDate = $('#toDate').val();
+		            	}
+		            	if (typeof $('#fromDate') != 'undefined') {
+		            		d.fromDate = $('#fromDate').val();
+		            	}
+		            	return JSON.stringify( d );
+		            }
+		        },
+		        "columns": [
+		        	{ "data": "simNo" },
+		            { "data": "cost" },
+		            { "data": "buyDate" },
+		            { "data": "buyerName" },
+		            { "data": "createdDate" },
+		            { "data": "createdByName" }
+		        ],
+		        "columnDefs": [
+		        	{
+	   	                "render": function ( data, type, row ) {
+	   	                    return '<strong class="text-danger">'+ data + '</strong>';
+	   	                },
+	   	                "targets": 0
+	   	            },
+	   	            {
+	   	                "render": function ( data, type, row ) {
+	   	                    return '<strong class="text-primary">'+ formatNumber(data) + '</strong>';
+	   	                },
+	   	                "targets": 1
+	   	            }
+		        ],
+		        "language": {
+		            "url": vietnameseUrl
+		        },
+		        "initComplete": function(settings, json) {
+					$('#fromDate').change(function (e) {
+				        table2.draw();
+				    });
+					$('#toDate').change(function (e) {
+				        table2.draw();
+				    });
+		          }
+	        });
+			
+	    });
+	    $(document).ready(function() {
+			table3 = $('#datatable3').DataTable( {
+				"processing": true,
+		        "serverSide": true,
+		        "ajax": {
+		        	type:"POST",
+		            url: simSellUrl,
+		            dataType: "json",
+		            contentType: "application/json",
+		            headers: {'X-CSRF-TOKEN': csrf_token},
+		            data: function ( d ) {
+		            	if (typeof $('#toDate') != 'undefined') {
+		            		d.toDate = $('#toDate').val();
+		            	}
+		            	if (typeof $('#fromDate') != 'undefined') {
+		            		d.fromDate = $('#fromDate').val();
+		            	}
+		            	return JSON.stringify( d );
+		            }
+		        },
+		        "columns": [
+		        	{ "data": "id" },
+		            { "data": "simNo" },
+		            { "data": "sellPrice" },
+		            { "data": "deposit" },
+		            { "data": "" },//will render later
+		            { "data": "customerName" },
+		            { "data": "customerInfo" },
+		            { "data": "sellerName" },
+		            { "data": "sellDate" },
+		            { "data": "createdBy" },
+		            { "data": "createdDate" }
+		        ],
+		        "columnDefs": [
+		        	{
+	   	                "render": function ( data, type, row ) {
+	   	                    return '<strong class="text-danger">'+ data + '</strong>';
+	   	                },
+	   	                "targets": 1
+	   	            },
+	   	            {
+	   	                "render": function ( data, type, row ) {
+	   	                    return '<strong class="text-primary">'+ formatNumber(data) + '</strong>';
+	   	                },
+	   	                "targets": 2
+	   	            },		                       
+			        {
+		                "render": function ( data, type, row ) {
+		                    return '<strong class="text-success">'+formatNumber(data)+'</strong>';
+		                },
+		                "targets": 3
+		            },
+		            {
+		                "render": function ( data, type, row ) {
+		                    return '<strong class="text-warning">'+formatNumber(row.deposit - row.sellPrice)+'</strong>';
+		                },
+		                "targets": 4
+		            }
+		        ],
+		        "language": {
+		            "url": vietnameseUrl
+		        },
+		        "initComplete": function(settings, json) {
+					$('#fromDate').change(function (e) {
+				        table3.draw();
+				    });
+					$('#toDate').change(function (e) {
+				        table3.draw();
+				    });
+		          }
+	        });
+			
+	    });
+	    
+	    
+	</script>
+	</div>
+</body>
+</html>
